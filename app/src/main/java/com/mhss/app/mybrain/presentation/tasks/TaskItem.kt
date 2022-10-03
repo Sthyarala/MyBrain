@@ -28,6 +28,7 @@ import com.mhss.app.mybrain.domain.model.Task
 import com.mhss.app.mybrain.util.date.formatDateDependingOnDay
 import com.mhss.app.mybrain.util.date.isDueDateOverdue
 import com.mhss.app.mybrain.util.settings.toPriority
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,6 +79,26 @@ fun LazyItemScope.TaskItem(
                     Spacer(Modifier.width(4.dp))
                     Text(
                         text = task.dueDate.formatDateDependingOnDay(),
+                        style = MaterialTheme.typography.body2,
+                        color = if (task.dueDate.isDueDateOverdue()) Color.Red else MaterialTheme.colors.onSurface
+                    )
+
+                    var due = task.dueDate
+                    var current = System.currentTimeMillis()
+                    var dayCounter : Long = 0
+
+                    if (((due - current) % 86400000) > 0)
+                    {
+                        dayCounter = (due - current) / 86400000 + 1
+                    }
+                    else
+                    {
+                        dayCounter = (due - current) / 86400000
+                    }
+
+                    Spacer(Modifier.width(15.dp))
+                    Text(
+                        text = "$dayCounter Days",
                         style = MaterialTheme.typography.body2,
                         color = if (task.dueDate.isDueDateOverdue()) Color.Red else MaterialTheme.colors.onSurface
                     )
